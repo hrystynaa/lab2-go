@@ -2,13 +2,13 @@ package lab2
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 )
 
 func PrefixToPostfix(input string) (string, error) {
 	stack := []string{}
 	tokens := strings.Fields(input)
-	tokenWasNumber := false
 	for i := len(tokens) - 1; i >= 0; i-- {
 		token := tokens[i]
 		switch {
@@ -20,16 +20,14 @@ func PrefixToPostfix(input string) (string, error) {
 			number1 := stack[len(stack)-1]
 			number2 := stack[len(stack)-2]
 			stack = stack[:len(stack)-2]
-			if tokenWasNumber && len(stack) == 0 {
+			if isNumber(number1) != isNumber(number2) && isNumber(number1) {
 				postfix = number2 + " " + number1 + " " + token
 			} else {
 				postfix = number1 + " " + number2 + " " + token
 			}
 			stack = append(stack, postfix)
-			tokenWasNumber = false
 		case isNumber(token):
 			stack = append(stack, token)
-			tokenWasNumber = true
 		default:
 			return "", fmt.Errorf("invalid token: %s", token)
 		}
@@ -47,5 +45,6 @@ func isOperator(token string) bool {
 
 // isNumber returns true if the token is a number.
 func isNumber(token string) bool {
-	return !isOperator(token)
+	_, err := strconv.Atoi(token)
+	return err == nil
 }
