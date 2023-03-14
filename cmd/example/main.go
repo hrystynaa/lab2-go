@@ -3,26 +3,57 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io"
+	"os"
+	"strings"
 
 	lab2 "github.com/hrystynaa/lab2-go"
 )
 
 var (
-	inputExpression = flag.String("e", "", "Expression to compute")
-	// TODO: Add other flags support for input and output configuration.
+	exprPtr = flag.String("e", "", "expression to evaluate")
+	filePtr = flag.String("f", "", "file containing expression to evaluate")
+	outPtr  = flag.String("o", "", "file to output result to ")
 )
 
 func main() {
+
 	flag.Parse()
 
-	// TODO: Change this to accept input from the command line arguments as described in the task and
-	//       output the results using the ComputeHandler instance.
-	//       handler := &lab2.ComputeHandler{
-	//           Input: {construct io.Reader according the command line parameters},
-	//           Output: {construct io.Writer according the command line parameters},
-	//       }
-	//       err := handler.Compute()
+	var input io.Reader
+	if *exprPtr != "" {
+		input = strings.NewReader(*exprPtr)
+	} else if *filePtr != "" {
+		file, err := os.Open(*filePtr)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "error opening file:", err)
+			os.Exit(1)
+		}
+		defer file.Close()
+		input = file
+	} else {
+		fmt.Fprintln(os.Stderr, "error: no input source specified")
+		os.Exit(1)
+	}
 
-	res, _ := lab2.PrefixToPostfix("+ 2 2")
-	fmt.Println(res)
+	var output io.Writer
+	if *outPtr != "" {
+		file, err := os.Create(*outPtr)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "error creating output file:", err)
+			os.Exit(1)
+		}
+		defer file.Close()
+		output = file
+	} else {
+		output = os.Stdout
+	}
+
+	handler := lab2.NewComputeHandler(input, output)
+	err := handler.Compute()
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "error computing expression:", err)
+		os.Exit(1)
+	}
+
 }
