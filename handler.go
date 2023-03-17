@@ -22,7 +22,7 @@ func (ch *ComputeHandler) Compute() error {
 
 	result, err := PrefixToPostfix(expr)
 	if err != nil {
-		return fmt.Errorf("error evaluating expression: %v", err)
+		return fmt.Errorf("error computing expression: %v", err)
 	}
 
 	_, err = fmt.Fprintln(ch.output, result)

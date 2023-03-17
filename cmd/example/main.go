@@ -32,7 +32,7 @@ func main() {
 		defer file.Close()
 		input = file
 	} else {
-		fmt.Fprintln(os.Stderr, "error: no input source specified")
+		fmt.Fprintln(os.Stderr, "error: no specific flags")
 		os.Exit(1)
 	}
 
@@ -52,7 +52,7 @@ func main() {
 	handler := lab2.NewComputeHandler(input, output)
 	err := handler.Compute()
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "error computing expression:", err)
+		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 
