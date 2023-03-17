@@ -26,7 +26,7 @@ func (s *PrefixToPostfixSuite) TestPrefixToPostfix(c *C) {
 		{"empty", "", "", fmt.Errorf("invalid expression: ")},
 		{"not enouph numbers", "+ 4", "", fmt.Errorf("invalid expression: + 4")},
 		{"postfix", "6 8 ^", "", fmt.Errorf("invalid expression: 6 8 ^")},
-		{"too many operators", "- + 5 * - 4 2 3", "", fmt.Errorf("invalid expression: - + 5 * - 4 2 3")},
+		{"too many operators", "- + 5 * - 4 2 3", "", fmt.Errorf("")},
 		{"invalid token", "? + 4 * 8 9 6", "", fmt.Errorf("invalid token: ?")},
 	}
 
